@@ -1,0 +1,73 @@
+version: '3.7'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    # command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command: >
+      mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    ports:
+      - "3307:3306" # port重複防止のため、local側は3306以外とする
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      # MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: docker
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+    networks:
+      - fastapi_network
+    volumes:
+      - db_volume:/var/lib/mysql
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SQLALCHEMY_WARN_20: 1
+    healthcheck:
+      test: "curl -f http://localhost:80/docs || exit 1"
+      interval: 5s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      - db
+    command: [
+        "/bin/sh",
+        "-c",
+        "poe migrate && uvicorn app.main:app --host 0.0.0.0 --port 80 --reload --log-config ./app/logger_config.yaml --proxy-headers --forwarded-allow-ips='*'"
+    ]
+    ports:
+      - 8888:80
+      - 8889:81 # for debug launch
+    volumes:
+      - .:/backend
+      - /backend/.venv
+    links:
+      - db
+    restart: always
+    networks:
+      - fastapi_network
+
+  # openapiのclient用のコードを自動生成するコンテナ
+  openapi-generator:
+    image: openapitools/openapi-generator-cli
+    depends_on:
+      web:
+        condition: service_healthy
+    volumes:
+      - ./frontend_sample:/fontend_sample
+    command: generate -i http://web/openapi.json -g typescript-axios -o /fontend_sample/src/api_clients --skip-validate-spec
+    networks:
+      - fastapi_network
+
+volumes:
+  db_volume:
+    driver: local
+
+networks:
+  fastapi_network:
+    name: fastapi_network
+    driver: bridge
