@@ -9,7 +9,7 @@ class User(ModelBaseMixin, Base):
     mysql_charset = ("utf8mb4",)
     mysql_collate = "utf8mb4_unicode_ci"
 
-    full_name: Mapped[str] = mapped_column(String(64), index=True)
+    name: Mapped[str] = mapped_column(String(64), index=True)
     email: Mapped[str] = mapped_column(
         String(200), unique=True, index=True, nullable=False,
     )
@@ -17,4 +17,4 @@ class User(ModelBaseMixin, Base):
         Boolean, nullable=False, server_default="0",
     )
     hashed_password: Mapped[str] = mapped_column(Text, nullable=False)
-    scopes: Mapped[str] = mapped_column(Text)
+    scopes: Mapped[str] = mapped_column(Text, nullable=True)

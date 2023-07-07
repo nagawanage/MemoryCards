@@ -60,7 +60,7 @@ logger.debug("end:mysql_proc")
 TEST_USER_CREATE_SCHEMA = schemas.UserCreate(
     email=settings.TEST_USER_EMAIL,
     password=settings.TEST_USER_PASSWORD,
-    full_name="test_user",
+    name="test_user",
 )
 
 

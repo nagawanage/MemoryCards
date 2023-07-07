@@ -22,7 +22,7 @@ class CRUDUser(
         db_obj = models.User(
             email=obj_in.email,
             hashed_password=get_password_hash(obj_in.password),
-            full_name=obj_in.full_name,
+            name=obj_in.name,
         )
         db.add(db_obj)
         db.flush()

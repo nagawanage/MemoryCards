@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   db:
@@ -16,7 +16,7 @@ services:
       MYSQL_USER: docker
       MYSQL_PASSWORD: docker
     networks:
-      - fastapi_network
+      - memorycards_network
     volumes:
       - db_volume:/var/lib/mysql
 
@@ -34,11 +34,12 @@ services:
       start_period: 5s
     depends_on:
       - db
-    command: [
+    command:
+      [
         "/bin/sh",
         "-c",
-        "poe migrate && uvicorn app.main:app --host 0.0.0.0 --port 80 --reload --log-config ./app/logger_config.yaml --proxy-headers --forwarded-allow-ips='*'"
-    ]
+        "poe migrate && uvicorn app.main:app --host 0.0.0.0 --port 80 --reload --log-config ./app/logger_config.yaml --proxy-headers --forwarded-allow-ips='*'",
+      ]
     ports:
       - 8888:80
       - 8889:81 # for debug launch
@@ -49,7 +50,7 @@ services:
       - db
     restart: always
     networks:
-      - fastapi_network
+      - memorycards_network
 
   # openapiのclient用のコードを自動生成するコンテナ
   openapi-generator:
@@ -61,13 +62,13 @@ services:
       - ./frontend_sample:/fontend_sample
     command: generate -i http://web/openapi.json -g typescript-axios -o /fontend_sample/src/api_clients --skip-validate-spec
     networks:
-      - fastapi_network
+      - memorycards_network
 
 volumes:
   db_volume:
     driver: local
 
 networks:
-  fastapi_network:
-    name: fastapi_network
+  memorycards_network:
+    name: memorycards_network
     driver: bridge

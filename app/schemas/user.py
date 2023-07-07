@@ -5,7 +5,7 @@ from app.schemas.core import BaseSchema, PagingMeta
 
 
 class UserBase(BaseSchema):
-    full_name: str | None = None
+    name: str | None = None
 
 
 class UserCreate(UserBase):
