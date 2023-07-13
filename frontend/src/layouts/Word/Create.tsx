@@ -8,6 +8,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 
+import useWordStore from "@/store/useWordStore";
 import Copyright from "@/components/molecules/CopyRight/Copyright";
 import Drawer from "@/components/organisms/Drawer/ClippedDrawer";
 import InputText from "@/components/atoms/InputText";
@@ -16,38 +17,26 @@ import Label from "@/components/atoms/Label";
 
 const CreateWord = () => {
   console.log("[Word/Create.tsx]");
-
   // 単語
-  const [word, setWord] = useState("");
+  const { word, updateWord, resetWord } = useWordStore();
   const onChangeWord = (e: ChangeEvent<HTMLInputElement>) => {
-    setWord(e.target.value);
+    updateWord(e.target.value);
   };
-  const resetWord = () => {
-    setWord("");
-  };
+
   // 意味
-  const [meaning, setMeaning] = useState("");
+  const { meaning, updateMeaning, resetMeaning } = useWordStore();
   const onChangeMeaning = (e: ChangeEvent<HTMLInputElement>) => {
-    setMeaning(e.target.value);
-  };
-  const resetMeaning = () => {
-    setMeaning("");
+    updateMeaning(e.target.value);
   };
   // ヒント
-  const [hint, setHint] = useState("");
+  const { hint, updateHint, resetHint } = useWordStore();
   const onChangeHint = (e: ChangeEvent<HTMLInputElement>) => {
-    setHint(e.target.value);
-  };
-  const resetHint = () => {
-    setHint("");
+    updateHint(e.target.value);
   };
   // メモ
-  const [note, setNote] = useState("");
+  const { note, updateNote, resetNote } = useWordStore();
   const onChangeNote = (e: ChangeEvent<HTMLInputElement>) => {
-    setNote(e.target.value);
-  };
-  const resetNote = () => {
-    setNote("");
+    updateNote(e.target.value);
   };
 
   // 登録
@@ -60,7 +49,7 @@ const CreateWord = () => {
       hint,
       note,
     };
-    console.log({ createData });
+    console.log("createData:", createData);
   };
 
   return (
