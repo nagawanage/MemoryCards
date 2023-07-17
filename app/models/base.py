@@ -16,17 +16,30 @@ class Base(DeclarativeBase):
 
 
 class ModelBaseMixin:
-    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=get_ulid)
+    id: Mapped[str] = mapped_column(
+        String(10),
+        primary_key=True,
+        default=get_ulid,
+        sort_order=-10
+    )
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, server_default=current_timestamp(),
+        DateTime,
+        nullable=False,
+        server_default=current_timestamp(),
+        sort_order=10
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
         nullable=False,
         default=current_timestamp(),
         onupdate=func.utc_timestamp(),
+        sort_order=11
     )
-    deleted_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    deleted_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=True,
+        sort_order=12
+    )
 
 
 class ModelBaseMixinWithoutDeletedAt:

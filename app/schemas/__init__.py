@@ -11,3 +11,4 @@ from .todo import (
 )
 from .token import Token, TokenPayload
 from .user import UserCreate, UserResponse, UsersPagedResponse, UserUpdate
+from .word import WordCreate, WordResponse, WordsPagedResponse, WordUpdate

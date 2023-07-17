@@ -5,6 +5,7 @@ from fastapi import Request
 
 
 def get_ulid() -> str:
+    """ソート可能なユニークIDを取得"""
     return ulid.new().str
 
 

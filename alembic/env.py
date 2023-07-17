@@ -41,6 +41,8 @@ def run_migrations_offline() -> None:
     Calls to context.execute() here emit the given string to the
     script output.
 
+    マイグレーションスクリプトを生成するだけで、実際のデータベースには変更を加えません。
+
     """
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
@@ -60,6 +62,7 @@ def run_migrations_online() -> None:
     In this scenario we need to create an Engine
     and associate a connection with the context.
 
+    DBに直接接続してマイグレーションを実行。
     """
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
