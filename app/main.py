@@ -9,7 +9,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 from starlette.middleware.cors import CORSMiddleware
 
-from app.api.endpoints import auth, tasks, todos, users
+from app.api.endpoints import auth, tasks, todos, users, words
 from app.core.config import settings
 from app.core.logger import get_logger
 
@@ -55,7 +55,6 @@ app.add_middleware(
 )
 
 
-
 @app.get("/", tags=["info"])
 def get_info() -> dict[str, str]:
     return {"title": settings.TITLE, "version": settings.VERSION}
@@ -65,6 +64,7 @@ app.include_router(auth.router, tags=["Auth"], prefix="/auth")
 app.include_router(users.router, tags=["Users"], prefix="/users")
 app.include_router(todos.router, tags=["Todos"], prefix="/todos")
 app.include_router(tasks.router, tags=["Tasks"], prefix="/tasks")
+app.include_router(words.router, tags=["Words"], prefix="/words")
 
 if settings.DEBUG:
     app.add_middleware(
