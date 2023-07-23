@@ -15,6 +15,7 @@ services:
       MYSQL_DATABASE: docker
       MYSQL_USER: docker
       MYSQL_PASSWORD: docker
+      TZ: "Asia/Tokyo"
     networks:
       - memorycards_network
     volumes:
@@ -25,6 +26,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      TZ: "Asia/Tokyo"
       SQLALCHEMY_WARN_20: 1
     healthcheck:
       test: "curl -f http://localhost:80/docs || exit 1"
@@ -48,7 +50,7 @@ services:
       - /backend/.venv
     links:
       - db
-    restart: always
+    # restart: always
     networks:
       - memorycards_network
 
@@ -59,8 +61,8 @@ services:
       web:
         condition: service_healthy
     volumes:
-      - ./frontend_sample:/fontend_sample
-    command: generate -i http://web/openapi.json -g typescript-axios -o /fontend_sample/src/api_clients --skip-validate-spec
+      - ./frontend:/fontend
+    command: generate -i http://web/openapi.json -g typescript-axios -o /fontend/src/api_clients --skip-validate-spec
     networks:
       - memorycards_network
 

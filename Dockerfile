@@ -1,7 +1,7 @@
 FROM python:3.10-buster
 
 ENV LANG C.UTF-8
-ENV TZ UTC
+ENV TZ=Asia/Tokyo
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONPATH /backend/app:/backend
 ENV TERM xterm-256color
