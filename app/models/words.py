@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, String, Text, TIMESTAMP
+from sqlalchemy import DateTime, String, Text, Integer, TIMESTAMP
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.mysql import JSON
 
@@ -13,13 +13,13 @@ class Word(ModelBaseMixin, Base):
     mysql_collate = "utf8mb4_unicode_ci"
 
     user_id: Mapped[str] = mapped_column(
-        String(10), nullable=False, comment='ユーザーID'
+        String(32), nullable=False, comment='ユーザーID'
     )
     category_id: Mapped[JSON] = mapped_column(
         JSON, comment='カテゴリID'
     )
     group_id: Mapped[JSON] = mapped_column(
-        JSON, comment='単語帳グループID'
+        JSON(), comment='単語帳グループID'
     )
     word: Mapped[str] = mapped_column(
         String(255), nullable=False, comment='単語名'
@@ -33,6 +33,8 @@ class Word(ModelBaseMixin, Base):
     note: Mapped[JSON] = mapped_column(
         JSON, comment='メモ'
     )
+    miss_count: Mapped[int] = mapped_column(
+        Integer(), server_default="0", comment='間違えた回数')
     check1_updated_at: Mapped[datetime] = mapped_column(
         TIMESTAMP, nullable=True, comment='チェックマーク1更新日時'
     )

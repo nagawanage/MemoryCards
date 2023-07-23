@@ -17,7 +17,7 @@ class Base(DeclarativeBase):
 
 class ModelBaseMixin:
     id: Mapped[str] = mapped_column(
-        String(10),
+        String(32),
         primary_key=True,
         default=get_ulid,
         sort_order=-10

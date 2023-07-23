@@ -10,13 +10,13 @@ from app import crud_v2, models, schemas
 from .base import CRUDV2Base
 
 
-class CRUDWord(
+class CRUDWordGroup(
     CRUDV2Base[
-        models.Word,
-        schemas.WordResponse,
-        schemas.WordCreate,
-        schemas.WordUpdate,
-        schemas.WordsPagedResponse,
+        models.WordGroup,
+        schemas.WordGroupResponse,
+        schemas.WordGroupCreate,
+        schemas.WordGroupUpdate,
+        schemas.WordGroupsPagedResponse,
     ],
 ):
     async def get_paged_list(  # type: ignore[override]
@@ -26,13 +26,13 @@ class CRUDWord(
         q: str | None = None,
         sort_query_in: schemas.SortQueryIn | None = None,
         include_deleted: bool = False,
-    ) -> schemas.WordsPagedResponse:
+    ) -> schemas.WordGroupsPagedResponse:
         where_clause = (
             [
                 or_(
                     # ilike: 大文字小文字を区別しないlike
-                    models.Word.word.ilike(f"%{q}%"),
-                    # models.Word.meaning.ilike(f"%{q}%"),
+                    models.WordGroup.name.ilike(f"%{q}%"),
+                    # models.WordGroup.meaning.ilike(f"%{q}%"),
                 ),
             ]
             if q
@@ -47,29 +47,29 @@ class CRUDWord(
         )
 
     # def add_tags_to_word(
-    #     self, db: Session, word: models.Word, tags_in: list[schemas.TagCreate],
-    # ) -> models.Word:
+    #     self, db: Session, word: models.WordGroup, tags_in: list[schemas.TagCreate],
+    # ) -> models.WordGroup:
     #     tags = crud_v2.tag.upsert_tags(db, tags_in=tags_in)
     #     words_tags_data = [{"word_id": word.id, "tag_id": tag.id} for tag in tags]
 
-    #     # WordとTagを紐づけ
-    #     stmt = insert(models.WordTag).values(words_tags_data)
+    #     # WordGroupとTagを紐づけ
+    #     stmt = insert(models.WordGroupTag).values(words_tags_data)
     #     stmt = stmt.on_duplicate_key_update(tag_id=stmt.inserted.tag_id)
     #     db.execute(stmt)
 
     #     stmt = (
-    #         select(models.Word)
-    #         .outerjoin(models.Word.tags)
-    #         .options(contains_eager(models.Word.tags))
-    #         .where(models.Word.id == word.id)
+    #         select(models.WordGroup)
+    #         .outerjoin(models.WordGroup.tags)
+    #         .options(contains_eager(models.WordGroup.tags))
+    #         .where(models.WordGroup.id == word.id)
     #     )
     #     word = db.execute(stmt).scalars().unique().first()
 
     #     return word
 
 
-word = CRUDWord(
-    models.Word,
-    response_schema_class=schemas.WordResponse,
-    list_response_class=schemas.WordsPagedResponse,
+word_group = CRUDWordGroup(
+    models.WordGroup,
+    response_schema_class=schemas.WordGroupResponse,
+    list_response_class=schemas.WordGroupsPagedResponse,
 )

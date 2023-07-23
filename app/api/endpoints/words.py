@@ -15,15 +15,17 @@ router = APIRouter()
 
 
 @router.get("/{id}", operation_id="get_word_by_id")
-async def get_job(
+async def get_word(
     id: str, include_deleted: bool = False, db: AsyncSession = Depends(get_async_db),
 ) -> schemas.WordResponse:
+    """GET /words/{id}"""
     word = await crud_v2.word.get_db_obj_by_id(
         db, id=id, include_deleted=include_deleted,
     )
-    print(word)
+    print(f"{word=}")
     if not word:
         raise APIException(ErrorMessage.ID_NOT_FOUND)
+
     return word
 
 
@@ -35,6 +37,7 @@ async def get_paged_words(
     include_deleted: bool = False,
     db: AsyncSession = Depends(get_async_db),
 ) -> schemas.WordsPagedResponse:
+    """GET /words?page=1&perPage=30"""
     return await crud_v2.word.get_paged_list(
         db,
         q=q,
@@ -57,6 +60,7 @@ async def update_word(
     data_in: schemas.WordUpdate,
     db: AsyncSession = Depends(get_async_db),
 ) -> schemas.WordResponse:
+    """PATCH /words/{id}"""
     word = await crud_v2.word.get_db_obj_by_id(db, id=id)
     if not word:
         raise APIException(ErrorMessage.ID_NOT_FOUND)
@@ -86,4 +90,5 @@ async def delete_word(
     word = await crud_v2.word.get_db_obj_by_id(db, id=id)
     if not word:
         raise APIException(ErrorMessage.ID_NOT_FOUND)
-    await crud_v2.word.delete(db, db_obj=word)
+    # await crud_v2.word.delete(db, db_obj=word)
+    await crud_v2.word.real_delete(db, db_obj=word)

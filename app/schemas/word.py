@@ -5,7 +5,7 @@ from fastapi import Query
 
 from app import schemas
 from app.schemas.core import BaseSchema, PagingMeta
-from app.schemas.tag import TagResponse
+# from app.schemas.tag import TagResponse
 
 
 class WordBase(BaseSchema):
@@ -33,7 +33,9 @@ class WordResponse(WordBase):
 
 
 class WordCreate(WordBase):
-    word: str
+    # id: str
+    # word: str
+    pass
 
 
 class WordUpdate(WordBase):
