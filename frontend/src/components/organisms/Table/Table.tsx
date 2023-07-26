@@ -99,9 +99,9 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   { id: "id", fixed: true, label: "id", minwidth: 50 },
-  { id: "user_id", label: "user_id", minwidth: 50 },
-  { id: "category_id", label: "カテゴリ", minwidth: 100 },
-  { id: "group_id", label: "単語帳", minwidth: 100 },
+  { id: "userId", label: "userId", minwidth: 50 },
+  { id: "categoryId", label: "カテゴリ", minwidth: 100 },
+  { id: "groupId", label: "単語帳", minwidth: 100 },
   { id: "word", label: "単語", minwidth: 200 },
   { id: "meaning", label: "意味", minwidth: 200 },
   { id: "hint", label: "ヒント", minwidth: 200 },
@@ -186,11 +186,12 @@ function BasicTableHead(props: BasicTableHeadProps) {
 
 interface BasicTableToolbarProps {
   numSelected: number;
+  title: string;
 }
 
 // Toolbar
 function BasicTableToolbar(props: BasicTableToolbarProps) {
-  const { numSelected } = props;
+  const { numSelected, title } = props;
 
   return (
     <Toolbar
@@ -222,7 +223,7 @@ function BasicTableToolbar(props: BasicTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          単語一覧
+          {title}
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -243,20 +244,23 @@ function BasicTableToolbar(props: BasicTableToolbarProps) {
 }
 
 type BasicTableProps = {
-  data: any;
+  title: string;
+  rows: Array;
+  rowsPerPageProps: number;
+  // data: any;
   // onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 };
 
 // BasicTable
 const BasicTable = (props: BasicTableProps) => {
-  const { rows = [] } = props;
+  const { title = "", rows = [], rowsPerPageProps = 10 } = props;
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("calories");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(ROWS_PER_PAGE);
+  const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageProps);
 
   const [isSelectMode, setIsSelectMode] = useState(true);
 
@@ -331,7 +335,7 @@ const BasicTable = (props: BasicTableProps) => {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <BasicTableToolbar numSelected={selected.length} />
+        <BasicTableToolbar numSelected={selected.length} title={title} />
         <TableContainer>
           <Table
             aria-labelledby="tableTitle"
@@ -383,12 +387,12 @@ const BasicTable = (props: BasicTableProps) => {
                     >
                       {row.id}
                     </TableCell>
-                    {/* user_id */}
-                    <TableCell align="center">{row.user_id}</TableCell>
-                    {/* category_id */}
-                    <TableCell align="center">{row.category_id}</TableCell>
-                    {/* group_id */}
-                    <TableCell align="center">{row.group_id}</TableCell>
+                    {/* userId */}
+                    <TableCell align="center">{row.userId}</TableCell>
+                    {/* categoryId */}
+                    <TableCell align="center">{row.categoryId}</TableCell>
+                    {/* groupId */}
+                    <TableCell align="center">{row.groupId}</TableCell>
                     {/* word */}
                     <TableCell align="left">{row.word}</TableCell>
                     {/* meaning */}
@@ -415,7 +419,7 @@ const BasicTable = (props: BasicTableProps) => {
 
         {/* ページネーション */}
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 30, 50]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
