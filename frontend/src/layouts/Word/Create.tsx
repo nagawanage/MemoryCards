@@ -2,8 +2,10 @@
 
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import Link from "next/link";
+import axios from "axios";
 
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
@@ -12,17 +14,26 @@ import useWordStore from "@/store/useWordStore";
 import Copyright from "@/components/molecules/CopyRight/Copyright";
 import Drawer from "@/components/organisms/Drawer/ClippedDrawer";
 import InputText from "@/components/atoms/InputText";
-import SubmitButton from "@/components/atoms/SubmitButton";
+import ClickableChips from "@/components/molecules/Chip/ClickableChips";
+// import SubmitButton from "@/components/atoms/SubmitButton";
 import Label from "@/components/atoms/Label";
+
+import { WordsPagedResponse, WordResponse } from "@/api_clients";
 
 const CreateWord = () => {
   console.log("[Word/Create.tsx]");
+
+  // 単語帳グループ
+  const { wordGroupIds, updateWordGroupIds, resetWordGroupIds } =
+    useWordStore();
+  const onChangeWordGroupIds = (e: ChangeEvent<HTMLInputElement>) => {
+    updateWordGroupIds(e.target.value);
+  };
   // 単語
   const { word, updateWord, resetWord } = useWordStore();
   const onChangeWord = (e: ChangeEvent<HTMLInputElement>) => {
     updateWord(e.target.value);
   };
-
   // 意味
   const { meaning, updateMeaning, resetMeaning } = useWordStore();
   const onChangeMeaning = (e: ChangeEvent<HTMLInputElement>) => {
@@ -39,17 +50,47 @@ const CreateWord = () => {
     updateNote(e.target.value);
   };
 
+  const postData = async (data): Promise<AxiosResponse> => {
+    const url = `http://0.0.0.0:8888/words`;
+    console.log({ url });
+    const response = await axios.post(url, data);
+    return response;
+  };
+
   // 登録
   const onClickSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    const createData: any = {
+    // const createData: any = {
+    //   word,
+    //   meaning,
+    //   hint,
+    //   note,
+    // };
+
+    // console.log("createData:", createData);
+
+    const wordData = {
+      userId: "1",
+      categoryId: ["1"],
+      groupId: ["1"],
       word,
       meaning,
       hint,
-      note,
+      note: { memo: note },
+      // check1UpdatedAt: "2023-07-27T13:33:43.486Z",
+      // check2UpdatedAt: "2023-07-27T13:33:43.486Z",
+      // check3UpdatedAt: "2023-07-27T13:33:43.486Z",
     };
-    console.log("createData:", createData);
+
+    // postData(createData)
+    postData(wordData)
+      .then((response) => {
+        console.log("Response:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   return (
@@ -72,6 +113,44 @@ const CreateWord = () => {
           </Grid>
 
           <Box sx={{ flexGrow: 1, width: "100%" }}>
+            {/* 単語帳グループ */}
+            <Grid
+              container
+              // direction="row"
+              justifyContent="flex-start"
+              alignItems="center"
+              spacing={2}
+              rowSpacing={8}
+            >
+              <Grid xs={2}>
+                <Label>単語帳</Label>
+              </Grid>
+              <Grid xs={10}>
+                <InputText
+                  value={wordGroupIds}
+                  onChange={onChangeWordGroupIds}
+                  onClick={resetWordGroupIds}
+                />
+              </Grid>
+            </Grid>
+
+            {/* カテゴリ */}
+            <Grid
+              container
+              // direction="row"
+              justifyContent="flex-start"
+              alignItems="center"
+              spacing={2}
+              rowSpacing={8}
+            >
+              <Grid xs={2}>
+                <Label>カテゴリ</Label>
+              </Grid>
+              <Grid xs={10}>
+                <ClickableChips />
+              </Grid>
+            </Grid>
+
             {/* 単語 */}
             <Grid
               container
@@ -105,6 +184,7 @@ const CreateWord = () => {
               </Grid>
               <Grid xs={10}>
                 <InputText
+                  multiline
                   value={meaning}
                   onChange={onChangeMeaning}
                   onClick={resetMeaning}
@@ -124,6 +204,7 @@ const CreateWord = () => {
               </Grid>
               <Grid xs={10}>
                 <InputText
+                  multiline
                   value={hint}
                   onChange={onChangeHint}
                   onClick={resetHint}
@@ -143,6 +224,7 @@ const CreateWord = () => {
               </Grid>
               <Grid xs={10}>
                 <InputText
+                  multiline
                   value={note}
                   onChange={onChangeNote}
                   onClick={resetNote}
@@ -157,7 +239,15 @@ const CreateWord = () => {
               my: 5,
             }}
           >
-            <SubmitButton text="登録" color="primary" onClick={onClickSubmit} />
+            {/* <SubmitButton text="登録" color="primary" onClick={onClickSubmit} /> */}
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={onClickSubmit}
+            >
+              登録
+            </Button>
           </Box>
         </Box>
         <Copyright />
