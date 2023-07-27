@@ -19,6 +19,7 @@ type Props = {
   // margin?: any;
   size?: "small" | "medium" | undefined;
   // textAlign?: string;
+  multiline?: boolean;
   inputProps?: any;
   onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   onClick: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
@@ -34,6 +35,7 @@ const InputText = (props: Props) => {
     label = "",
     fullWidth = true,
     size = "medium",
+    multiline = false,
     inputProps = {},
     onChange,
     onClick,
@@ -57,6 +59,8 @@ const InputText = (props: Props) => {
         fullWidth={fullWidth}
         size={size}
         inputProps={inputProps}
+        multiline={multiline}
+        maxRows={4}
         onChange={onChange}
         endAdornment={
           <InputAdornment position="end">
